@@ -28,8 +28,10 @@ export default function ImageGallery({ searchQuery, page, onClick, newFetch }) {
             setGallery(prevState => [...prevState, galleryList]),
             setStatus('resolved')
           );
-        } else if (newFetch && galleryList.hits.length > 0) {
-          return setGallery([galleryList]), setStatus('resolved');
+        }
+        if (newFetch && galleryList.hits.length > 0) {
+          setStatus('resolved');
+          return setGallery([galleryList]);
         }
 
         return Promise.reject(
@@ -37,7 +39,8 @@ export default function ImageGallery({ searchQuery, page, onClick, newFetch }) {
         );
       })
       .catch(error => {
-        return setError(error), setStatus('rejected');
+        setStatus('rejected');
+        return setError(error);
       });
   }, [newFetch, page, searchQuery]);
 
@@ -63,9 +66,6 @@ export default function ImageGallery({ searchQuery, page, onClick, newFetch }) {
   }
 
   if (status === 'resolved') {
-    console.log(gallery);
-    console.log(gallery.length);
-    console.log(gallery.length !== Math.ceil(gallery.totalHits / 12));
     return (
       <div>
         {showModal && <Modal image={largeImage} onClose={closeModal} />}
